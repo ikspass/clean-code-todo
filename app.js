@@ -8,12 +8,12 @@
 // Event handling, user interaction is what starts the code execution.
 
 const taskInput = document.getElementById('new-task') //Add a new task.
-const addButton = document.getElementsByTagName('button')[0] //first button
-const incompleteTaskHolder = document.getElementById('incompleteTasks') //ul of #incompleteTasks
-const completedTasksHolder = document.getElementById('completed-tasks') //completed-tasks
+const createTaskButton = document.getElementsByTagName('button')[0] //first button
+const incompleteTasksList = document.getElementById('incompleteTasks') //ul of #incompleteTasks
+const completedTasksList = document.getElementById('completed-tasks') //completed-tasks
 
 //New task list item
-const createNewTaskElement = function (taskString) {
+const createTaskListItem = function (taskText) {
   const listItem = document.createElement('li')
 
   //input (checkbox)
@@ -29,7 +29,7 @@ const createNewTaskElement = function (taskString) {
   const deleteButton = document.createElement('button') //delete button
   const deleteButtonImg = document.createElement('img') //delete button image
 
-  label.innerText = taskString
+  label.innerText = taskText
   label.className = 'task'
 
   //Each elements, needs appending
@@ -56,10 +56,10 @@ const createNewTaskElement = function (taskString) {
 const addTask = function () {
   //Create a new list item with the text from the #new-task:
   if (!taskInput.value) return
-  const listItem = createNewTaskElement(taskInput.value)
+  const listItem = createTaskListItem(taskInput.value)
 
-  //Append listItem to incompleteTaskHolder
-  incompleteTaskHolder.appendChild(listItem)
+  //Append listItem to incompleteTasksList
+  incompleteTasksList.appendChild(listItem)
   bindTaskEvents(listItem)
 
   taskInput.value = ''
@@ -72,17 +72,17 @@ const editTask = function () {
 
   const editInput = listItem.querySelector('input[type=text]')
   const label = listItem.querySelector('label')
-  const editBtn = listItem.querySelector('.edit')
-  const containsClass = listItem.classList.contains('editMode')
+  const editButton = listItem.querySelector('.edit')
+  const isEditMode = listItem.classList.contains('editMode')
   //If class of the parent is .editmode
-  if (containsClass) {
+  if (isEditMode) {
     //switch to .editmode
     //label becomes the inputs value.
     label.innerText = editInput.value
-    editBtn.innerText = 'Edit'
+    editButton.innerText = 'Edit'
   } else {
     editInput.value = label.innerText
-    editBtn.innerText = 'Save'
+    editButton.innerText = 'Save'
   }
 
   //toggle .editmode on the parent.
@@ -102,7 +102,7 @@ const toggleTaskState = function () {
   const listItem = this.parentNode
   const isChecked = this.checked
 
-  const targetHolder = isChecked ? completedTasksHolder : incompleteTaskHolder
+  const targetHolder = isChecked ? completedTasksList : incompleteTasksList
 
   targetHolder.appendChild(listItem)
 }
@@ -110,7 +110,7 @@ const toggleTaskState = function () {
 //The glue to hold it all together.
 
 //Set the click handler to the addTask function.
-addButton.addEventListener('click', addTask)
+createTaskButton.addEventListener('click', addTask)
 
 const bindTaskEvents = function (taskListItem) {
   //select ListItems children
@@ -126,15 +126,15 @@ const bindTaskEvents = function (taskListItem) {
   checkBox.onchange = toggleTaskState
 }
 
-//cycle over incompleteTaskHolder ul list items
+//cycle over incompleteTasksList ul list items
 //for each list item
-for (let i = 0; i < incompleteTaskHolder.children.length; i++) {
+for (let i = 0; i < incompleteTasksList.children.length; i++) {
   //bind events to list items chldren(tasksCompleted)
-  bindTaskEvents(incompleteTaskHolder.children[i])
+  bindTaskEvents(incompleteTasksList.children[i])
 }
 
-//cycle over completedTasksHolder ul list items
-for (let i = 0; i < completedTasksHolder.children.length; i++) {
+//cycle over completedTasksList ul list items
+for (let i = 0; i < completedTasksList.children.length; i++) {
   //bind events to list items chldren(tasksIncompleted)
-  bindTaskEvents(completedTasksHolder.children[i])
+  bindTaskEvents(completedTasksList.children[i])
 }
